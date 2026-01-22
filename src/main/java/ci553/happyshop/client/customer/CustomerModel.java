@@ -65,12 +65,6 @@ public class CustomerModel {
 
     void addToTrolley(){
         if(theProduct!= null){
-
-            // trolley.add(theProduct) — Product is appended to the end of the trolley.
-            // To keep the trolley organized, add code here or call a method that:
-            //TODO
-            // 1. Merges items with the same product ID (combining their quantities).
-            // 2. Sorts the products in the trolley by product ID.
             String quantityText = cusView.getQuantityText().trim();
             int quantity;
             try {
@@ -95,14 +89,24 @@ public class CustomerModel {
                     theProduct.getStockQuantity()
             );
             addedProduct.setOrderedQuantity(quantity);
-            trolley.add(addedProduct);
-            displayTaTrolley = ProductListFormatter.buildString(trolley); //build a String for trolley so that we can show it
+            boolean merged = false;
+            for (Product existing : trolley) {
+                if (existing.getProductId().equals(addedProduct.getProductId())) {
+                    existing.setOrderedQuantity(existing.getOrderedQuantity() + addedProduct.getOrderedQuantity());
+                    merged = true;
+                    break;
+                }
+            }
+            if (!merged) {
+                trolley.add(addedProduct);
+            }
+            displayTaTrolley = ProductListFormatter.buildString(trolley); // Build Trolley Display Text
         }
         else{
             displayLaSearchResult = "Please search for an available product before adding it to the trolley";
             System.out.println("must search and get an available product before add to trolley");
         }
-        displayTaReceipt=""; // Clear receipt to switch back to trolleyPage (receipt shows only when not empty)
+        displayTaReceipt=""; // Clear Receipt For Trolley View
         updateView();
     }
 
