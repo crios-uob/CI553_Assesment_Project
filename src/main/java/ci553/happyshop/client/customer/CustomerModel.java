@@ -71,7 +71,31 @@ public class CustomerModel {
             //TODO
             // 1. Merges items with the same product ID (combining their quantities).
             // 2. Sorts the products in the trolley by product ID.
-            trolley.add(theProduct);
+            String quantityText = cusView.getQuantityText().trim();
+            int quantity;
+            try {
+                quantity = Integer.parseInt(quantityText);
+            } catch (NumberFormatException e) {
+                displayLaSearchResult = "Please enter a valid quantity";
+                updateView();
+                return;
+            }
+
+            if (quantity <= 0) {
+                displayLaSearchResult = "Quantity must be at least 1";
+                updateView();
+                return;
+            }
+
+            Product addedProduct = new Product(
+                    theProduct.getProductId(),
+                    theProduct.getProductDescription(),
+                    theProduct.getProductImageName(),
+                    theProduct.getUnitPrice(),
+                    theProduct.getStockQuantity()
+            );
+            addedProduct.setOrderedQuantity(quantity);
+            trolley.add(addedProduct);
             displayTaTrolley = ProductListFormatter.buildString(trolley); //build a String for trolley so that we can show it
         }
         else{
@@ -166,9 +190,11 @@ public class CustomerModel {
                 Product existing = grouped.get(id);
                 existing.setOrderedQuantity(existing.getOrderedQuantity() + p.getOrderedQuantity());
             } else {
-                // Make a shallow copy to avoid modifying the original
-                grouped.put(id,new Product(p.getProductId(),p.getProductDescription(),
-                        p.getProductImageName(),p.getUnitPrice(),p.getStockQuantity()));
+                // Make Copy to Avoid Changing Original Product Object
+                Product copy = new Product(p.getProductId(), p.getProductDescription(),
+                        p.getProductImageName(), p.getUnitPrice(), p.getStockQuantity());
+                copy.setOrderedQuantity(p.getOrderedQuantity());
+                grouped.put(id, copy);
             }
         }
         return new ArrayList<>(grouped.values());
@@ -208,5 +234,9 @@ public class CustomerModel {
     //for test only
     public ArrayList<Product> getTrolley() {
         return trolley;
+    }
+
+    void setCurrentProduct(Product product) {
+        theProduct = product;
     }
 }
