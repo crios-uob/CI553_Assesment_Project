@@ -71,16 +71,67 @@ class CustomerModelStockShortageTest {
         assertTrue(view.lastSearchResult.contains("0002"));
     }
 
+    @Test
+    void addToTrolleyUsesEnteredQuantity() {
+        CustomerModel model = new CustomerModel();
+        TestCustomerView view = new TestCustomerView();
+
+        model.cusView = view;
+        model.setCurrentProduct(new Product("0001", "TV", "0001.jpg", 10.0, 5));
+        view.quantityText = "3";
+
+        model.addToTrolley();
+
+        assertEquals(1, model.getTrolley().size());
+        assertEquals(3, model.getTrolley().get(0).getOrderedQuantity());
+    }
+
+    @Test
+    void addToTrolleyShowsMessageForInvalidQuantity() {
+        CustomerModel model = new CustomerModel();
+        TestCustomerView view = new TestCustomerView();
+
+        model.cusView = view;
+        model.setCurrentProduct(new Product("0001", "TV", "0001.jpg", 10.0, 5));
+        view.quantityText = "abc";
+
+        model.addToTrolley();
+
+        assertTrue(view.lastSearchResult.contains("valid quantity"));
+        assertEquals(0, model.getTrolley().size());
+    }
+
+    @Test
+    void addToTrolleyShowsMessageForZeroQuantity() {
+        CustomerModel model = new CustomerModel();
+        TestCustomerView view = new TestCustomerView();
+
+        model.cusView = view;
+        model.setCurrentProduct(new Product("0001", "TV", "0001.jpg", 10.0, 5));
+        view.quantityText = "0";
+
+        model.addToTrolley();
+
+        assertTrue(view.lastSearchResult.contains("at least 1"));
+        assertEquals(0, model.getTrolley().size());
+    }
+
     static class TestCustomerView extends CustomerView {
         String lastSearchResult = "";
         String lastTrolley = "";
         String lastReceipt = "";
+        String quantityText = "1";
 
         @Override
         public void update(String imageName, String searchResult, String trolley, String receipt) {
             lastSearchResult = searchResult;
             lastTrolley = trolley;
             lastReceipt = receipt;
+        }
+
+        @Override
+        public String getQuantityText() {
+            return quantityText;
         }
 
         @Override
