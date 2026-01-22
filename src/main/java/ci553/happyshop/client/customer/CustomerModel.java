@@ -71,7 +71,7 @@ public class CustomerModel {
             //TODO
             // 1. Merges items with the same product ID (combining their quantities).
             // 2. Sorts the products in the trolley by product ID.
-            String quantityText = cusView.tfQuantity.getText().trim();
+            String quantityText = cusView.getQuantityText().trim();
             int quantity;
             try {
                 quantity = Integer.parseInt(quantityText);
@@ -234,5 +234,9 @@ public class CustomerModel {
     //for test only
     public ArrayList<Product> getTrolley() {
         return trolley;
+    }
+
+    void setCurrentProduct(Product product) {
+        theProduct = product;
     }
 }
