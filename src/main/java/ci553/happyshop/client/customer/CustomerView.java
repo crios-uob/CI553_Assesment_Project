@@ -39,6 +39,7 @@ public class CustomerView  {
 
     TextField tfId; //for user input on the search page. Made accessible so it can be accessed or modified by CustomerModel
     TextField tfName; //for user input on the search page. Made accessible so it can be accessed by CustomerModel
+    TextField tfQuantity; // Quantity Input Field For Customer
 
     //four controllers needs updating when program going on
     private ImageView ivProduct; //image area in searchPage
@@ -93,6 +94,12 @@ public class CustomerView  {
         tfName.setStyle(UIStyle.textFiledStyle);
         HBox hbName = new HBox(10, laName, tfName);
 
+        Label laQuantity = new Label("Quantity:");
+        laQuantity.setStyle(UIStyle.labelStyle);
+        tfQuantity = new TextField("1");
+        tfQuantity.setStyle(UIStyle.textFiledStyle);
+        HBox hbQuantity = new HBox(10, laQuantity, tfQuantity);
+
         Label laPlaceHolder = new Label(  " ".repeat(15)); //create left-side spacing so that this HBox aligns with others in the layout.
         Button btnSearch = new Button("Search");
         btnSearch.setStyle(UIStyle.buttonStyle);
@@ -115,7 +122,7 @@ public class CustomerView  {
         HBox hbSearchResult = new HBox(5, ivProduct, lbProductInfo);
         hbSearchResult.setAlignment(Pos.CENTER_LEFT);
 
-        VBox vbSearchPage = new VBox(15, laPageTitle, hbId, hbName, hbBtns, hbSearchResult);
+        VBox vbSearchPage = new VBox(15, laPageTitle, hbId, hbName, hbQuantity, hbBtns, hbSearchResult);
         vbSearchPage.setPrefWidth(COLUMN_WIDTH);
         vbSearchPage.setAlignment(Pos.TOP_CENTER);
         vbSearchPage.setStyle("-fx-padding: 15px;");
