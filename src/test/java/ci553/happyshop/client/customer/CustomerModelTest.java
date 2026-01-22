@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class CustomerModelStockShortageTest {
+class CustomerModelTest {
 
     @Test
     void checkOutWithInsufficientStockShowsNotifierAndRemovesItems() throws IOException, SQLException {
