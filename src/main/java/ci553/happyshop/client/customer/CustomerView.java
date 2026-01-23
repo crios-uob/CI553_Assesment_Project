@@ -213,6 +213,10 @@ public class CustomerView  {
         return tfQuantity.getText();
     }
 
+    public String getIdText() {
+        return tfId.getText();
+    }
+
     // Replaces the last child of hbRoot with the specified page.
     // the last child is either vbTrolleyPage or vbReceiptPage.
     private void showTrolleyOrReceiptPage(Node pageToShow) {
