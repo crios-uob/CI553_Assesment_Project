@@ -165,6 +165,54 @@ class CustomerModelTest {
         assertEquals(2, model.getTrolley().size());
     }
 
+    @Test
+    void addToTrolleySortsProductsById() {
+        CustomerModel model = new CustomerModel();
+        TestCustomerView view = new TestCustomerView();
+
+        model.cusView = view;
+
+        model.setCurrentProduct(new Product("0003", "Toaster", "0003.jpg", 10.0, 5));
+        view.quantityText = "1";
+        model.addToTrolley();
+
+        model.setCurrentProduct(new Product("0001", "TV", "0001.jpg", 10.0, 5));
+        view.quantityText = "1";
+        model.addToTrolley();
+
+        model.setCurrentProduct(new Product("0002", "Radio", "0002.jpg", 5.0, 5));
+        view.quantityText = "1";
+        model.addToTrolley();
+
+        assertEquals("0001", model.getTrolley().get(0).getProductId());
+        assertEquals("0002", model.getTrolley().get(1).getProductId());
+        assertEquals("0003", model.getTrolley().get(2).getProductId());
+    }
+
+    @Test
+    void addToTrolleyKeepsSortedOrderAfterMerge() {
+        CustomerModel model = new CustomerModel();
+        TestCustomerView view = new TestCustomerView();
+
+        model.cusView = view;
+
+        model.setCurrentProduct(new Product("0002", "Radio", "0002.jpg", 5.0, 5));
+        view.quantityText = "1";
+        model.addToTrolley();
+
+        model.setCurrentProduct(new Product("0001", "TV", "0001.jpg", 10.0, 5));
+        view.quantityText = "1";
+        model.addToTrolley();
+
+        model.setCurrentProduct(new Product("0002", "Radio", "0002.jpg", 5.0, 5));
+        view.quantityText = "2";
+        model.addToTrolley();
+
+        assertEquals("0001", model.getTrolley().get(0).getProductId());
+        assertEquals("0002", model.getTrolley().get(1).getProductId());
+        assertEquals(2, model.getTrolley().size());
+    }
+
     static class TestCustomerView extends CustomerView {
         String lastSearchResult = "";
         String lastTrolley = "";
