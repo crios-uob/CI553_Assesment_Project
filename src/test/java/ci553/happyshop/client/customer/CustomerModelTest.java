@@ -116,6 +116,55 @@ class CustomerModelTest {
         assertEquals(0, model.getTrolley().size());
     }
 
+    @Test
+    void addToTrolleyMergesDuplicateProductsAcrossAdds() {
+        CustomerModel model = new CustomerModel();
+        TestCustomerView view = new TestCustomerView();
+
+        model.cusView = view;
+
+        model.setCurrentProduct(new Product("0001", "TV", "0001.jpg", 10.0, 5));
+        view.quantityText = "2";
+        model.addToTrolley();
+
+        model.setCurrentProduct(new Product("0002", "Radio", "0002.jpg", 5.0, 5));
+        view.quantityText = "1";
+        model.addToTrolley();
+
+        model.setCurrentProduct(new Product("0001", "TV", "0001.jpg", 10.0, 5));
+        view.quantityText = "3";
+        model.addToTrolley();
+
+        int tvQuantity = 0;
+        for (Product product : model.getTrolley()) {
+            if (product.getProductId().equals("0001")) {
+                tvQuantity = product.getOrderedQuantity();
+                break;
+            }
+        }
+
+        assertEquals(2, model.getTrolley().size());
+        assertEquals(5, tvQuantity);
+    }
+
+    @Test
+    void addToTrolleyDoesNotMergeDifferentProducts() {
+        CustomerModel model = new CustomerModel();
+        TestCustomerView view = new TestCustomerView();
+
+        model.cusView = view;
+
+        model.setCurrentProduct(new Product("0001", "TV", "0001.jpg", 10.0, 5));
+        view.quantityText = "1";
+        model.addToTrolley();
+
+        model.setCurrentProduct(new Product("0002", "Radio", "0002.jpg", 5.0, 5));
+        view.quantityText = "1";
+        model.addToTrolley();
+
+        assertEquals(2, model.getTrolley().size());
+    }
+
     static class TestCustomerView extends CustomerView {
         String lastSearchResult = "";
         String lastTrolley = "";
