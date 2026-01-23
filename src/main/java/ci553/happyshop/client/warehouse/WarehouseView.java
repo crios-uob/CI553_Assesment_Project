@@ -155,6 +155,62 @@ public class WarehouseView  {
         viewWindow = window; // Sets the global viewWindow reference to this window for future reference and management.
     }
 
+    public String getSearchKeywordText() {
+        return tfSearchKeyword.getText();
+    }
+
+    public Product getSelectedProduct() {
+        return obrLvProducts.getSelectionModel().getSelectedItem();
+    }
+
+    public String getFormMode() {
+        return theProFormMode;
+    }
+
+    public String getEditPriceText() {
+        return tfPriceEdit.getText();
+    }
+
+    public String getEditStockText() {
+        return tfStockEdit.getText();
+    }
+
+    public String getEditDescriptionText() {
+        return taDescriptionEdit.getText();
+    }
+
+    public boolean isUserSelectedImageEdit() {
+        return isUserSelectedImageEdit;
+    }
+
+    public String getUserSelectedImageUriEdit() {
+        return userSelectedImageUriEdit;
+    }
+
+    public String getChangeByText() {
+        return tfChangeByEdit.getText();
+    }
+
+    public String getNewIdText() {
+        return tfIdNewPro.getText();
+    }
+
+    public String getNewPriceText() {
+        return tfPriceNewPro.getText();
+    }
+
+    public String getNewStockText() {
+        return tfStockNewPro.getText();
+    }
+
+    public String getNewDescriptionText() {
+        return taDescriptionNewPro.getText();
+    }
+
+    public String getNewImageUri() {
+        return imageUriNewPro;
+    }
+
     private VBox createSearchPage() {
         Label laTitle = new Label("Search by product ID/Name");
         laTitle.setStyle(UIStyle.labelTitleStyle);
@@ -596,5 +652,4 @@ public class WarehouseView  {
 //
 
 }
-
 

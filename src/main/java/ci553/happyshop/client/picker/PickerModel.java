@@ -40,8 +40,8 @@ import java.util.TreeSet;
  */
 
 public class PickerModel {
-    public PickerView pickerView;
-    private OrderHub orderHub = OrderHub.getOrderHub();
+    public PickerDisplay pickerView;
+    private PickerOrderHub orderHub = OrderHub.getOrderHub();
 
     //two elements that need to be passed to PickerView for updating.
     private String displayTaOrderMap="";
@@ -74,7 +74,6 @@ public class PickerModel {
         }
     }
 
-    // Lock an order
     private boolean lockOrder(int orderId) {
         if (lockedOrderIds.contains(orderId)) {
             return false; // Order is already locked
@@ -84,12 +83,10 @@ public class PickerModel {
         }
     }
 
-    // Unlock an order
     private void unlockOrder(int orderId) {
         lockedOrderIds.remove(orderId);
     }
 
-    // Check if an order is locked
     private boolean isOrderLocked(int orderId) {
         return lockedOrderIds.contains(orderId);
     }
@@ -105,26 +102,17 @@ public class PickerModel {
         }
     }
 
-    // Registers this PickerModel instance with the OrderHub
-    //so it can receive updates about orderMap changes.
     public void registerWithOrderHub(){
-        OrderHub orderHub = OrderHub.getOrderHub();
         orderHub.registerPickerModel(this);
     }
 
-    //Notifies the OrderHub of a change in the order state.
-    //If the order is moving to the 'Progressing' state, asks OrderHub to read the order detail
-    // from the file system for displaying in the pickerView.
     private void notifyOrderHub() throws IOException {
         orderHub.changeOrderStateMoveFile(theOrderId, theOrderState);
         if (theOrderState == OrderState.Progressing) {
-            // Read order file, ie. order details
             displayTaOrderDetail = orderHub.getOrderDetailForPicker(theOrderId);
         }
     }
 
-    // Sets the order map with new data and refreshes the display.
-    // This method is called by OrderHub to set orderMap for picker.
     public void setOrderMap(TreeMap<Integer,OrderState> om) {
         orderMap.clear();
         orderMap.putAll(om);
@@ -132,8 +120,6 @@ public class PickerModel {
         updatePickerView();
     }
 
-    //Builds a formatted string representing the current order map.
-    //Each line contains the order ID followed by its state, aligned with spacing.
     private String buildOrderMapString() {
         StringBuilder sb = new StringBuilder();
         for(Map.Entry<Integer, OrderState> entry : orderMap.entrySet()) {
@@ -147,5 +133,14 @@ public class PickerModel {
     private void updatePickerView()
     {
         pickerView.update(displayTaOrderMap,displayTaOrderDetail);
+    }
+
+    void setOrderHub(PickerOrderHub orderHub) {
+        this.orderHub = orderHub;
+    }
+
+    void resetLocksForTest() {
+        lockedOrderIds.clear();
+        theOrderId = 0;
     }
 }

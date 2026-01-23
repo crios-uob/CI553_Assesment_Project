@@ -26,7 +26,7 @@ public class OrderTracker {
 
     // TreeMap (orderID,state) holding order IDs and their corresponding states.
     private static final TreeMap<Integer, OrderState> ordersMap = new TreeMap<>();
-    private final TextArea taDisplay; //area to show all orderId and their state on the GUI
+    private final TextArea taDisplay; // Area To Show Order Id And State
 
      //Constructor initializes the UI, a title Label, and a TextArea for displaying the order details.
     public OrderTracker() {
@@ -46,9 +46,13 @@ public class OrderTracker {
         window.setScene(scene);
         window.setTitle("🛒Order Tracker");
 
-        // Registers the window's position with WinPosManager.
+        // Registers Window Position For Tracker
         WinPosManager.registerWindow(window,WIDTH,HEIGHT); //calculate position x and y for this window
         window.show();
+    }
+
+    public String getDisplayText() {
+        return taDisplay.getText();
     }
 
     /**
@@ -73,14 +77,18 @@ public class OrderTracker {
      //Displays the current order map in the TextArea.
      //Iterates over the ordersMap and formats each order ID and state for display.
     private void displayOrderMap() {
+        String textDisplay = buildOrderMapText(ordersMap);
+        taDisplay.setText(textDisplay);
+    }
+
+    public static String buildOrderMapText(TreeMap<Integer, OrderState> orderMap) {
         StringBuilder sb = new StringBuilder();
-        for(Map.Entry<Integer, OrderState> entry : ordersMap.entrySet()) {
+        for(Map.Entry<Integer, OrderState> entry : orderMap.entrySet()) {
             int orderId = entry.getKey();
             OrderState orderState = entry.getValue();
             sb.append(orderId).append(" ".repeat(5)).append(orderState).append("\n");
         }
-        String textDisplay = sb.toString();
-        taDisplay.setText(textDisplay);
+        return sb.toString();
     }
 
 }

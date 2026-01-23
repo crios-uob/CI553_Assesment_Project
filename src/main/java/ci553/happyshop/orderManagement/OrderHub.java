@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  * managementing logic into a unified workflow.</p>
  */
 
-public class OrderHub  {
+public class OrderHub implements ci553.happyshop.client.picker.PickerOrderHub {
     private static OrderHub orderHub; //singleton instance
 
     private final Path orderedPath = StorageLocation.orderedPath;

@@ -61,7 +61,7 @@ public class WarehouseModel {
     }
 
     void doSearch() throws SQLException {
-        String keyword = view.tfSearchKeyword.getText().trim();
+        String keyword = view.getSearchKeywordText().trim();
         if (!keyword.equals("")) {
             productList = databaseRW.searchProduct(keyword);
         }
@@ -74,7 +74,7 @@ public class WarehouseModel {
 
     void doDelete() throws SQLException, IOException {
         System.out.println("delete gets called in model");
-        Product pro  = view.obrLvProducts.getSelectionModel().getSelectedItem();
+        Product pro  = view.getSelectedProduct();
         if (pro != null ) {
             theSelectedPro = pro;
             productList.remove(theSelectedPro); //remove the product from product List
@@ -96,7 +96,7 @@ public class WarehouseModel {
 
     void doEdit() {
         System.out.println("Edit gets called in model");
-        Product pro = view.obrLvProducts.getSelectionModel().getSelectedItem();
+        Product pro = view.getSelectedProduct();
         if (pro != null) {
             theSelectedPro = pro;
             displayIdEdit = theSelectedPro.getProductId();
@@ -118,20 +118,20 @@ public class WarehouseModel {
     }
 
     void doCancel(){
-       if(view.theProFormMode.equals("EDIT")){
+       if(view.getFormMode().equals("EDIT")){
            updateView(UpdateForAction.BtnCancelEdit);
            theSelectedPro = null;
        }
-       if(view.theProFormMode.equals("NEW")){
+       if(view.getFormMode().equals("NEW")){
            updateView(UpdateForAction.BtnCancelNew);
            theNewProId = null;
        }
     }
     void doSummit() throws SQLException, IOException {
-        if(view.theProFormMode.equals("EDIT")){
+        if(view.getFormMode().equals("EDIT")){
             doSubmitEdit();
         }
-        if(view.theProFormMode.equals("NEW")){
+        if(view.getFormMode().equals("NEW")){
             doSubmitNew();
         }
     }
@@ -143,15 +143,15 @@ public class WarehouseModel {
             System.out.println("theSelectedPro " + id); //debug purpose
             String imageName = theSelectedPro.getProductImageName();
 
-            String textPrice =view.tfPriceEdit.getText().trim();
-            String textStock =view.tfStockEdit.getText().trim();
-            String description = view.taDescriptionEdit.getText().trim();
+            String textPrice =view.getEditPriceText().trim();
+            String textStock =view.getEditStockText().trim();
+            String description = view.getEditDescriptionText().trim();
 
-            if(view.isUserSelectedImageEdit == true){  //if the user changed image
+            if(view.isUserSelectedImageEdit() == true){  //if the user changed image
                 ImageFileManager.deleteImageFile(StorageLocation.imageFolder, imageName); //delete the old image
                 //copy the user selected image to project image folder
                 //we use productId as image name, but we need to get its extension from the user selected image
-                String newImageNameWithExtension = ImageFileManager.copyFileToDestination(view.userSelectedImageUriEdit, StorageLocation.imageFolder,id);
+                String newImageNameWithExtension = ImageFileManager.copyFileToDestination(view.getUserSelectedImageUriEdit(), StorageLocation.imageFolder,id);
                 imageName = newImageNameWithExtension;
             }
 
@@ -174,9 +174,9 @@ public class WarehouseModel {
     }
 
     void doChangeStockBy(String addOrSub) throws SQLException {
-        int oldStock = Integer.parseInt(view.tfStockEdit.getText().trim());
+        int oldStock = Integer.parseInt(view.getEditStockText().trim());
         int newStock =oldStock;
-        String TextChangeBy = view.tfChangeByEdit.getText().trim();
+        String TextChangeBy = view.getChangeByText().trim();
         if(!TextChangeBy.isEmpty()){
             if(validateInputChangeStockBy(TextChangeBy)==false){
                 updateView(UpdateForAction.ShowInputErrorMsg);
@@ -216,11 +216,11 @@ public class WarehouseModel {
         System.out.println("Adding new Pro in model");
 
         //all info(input from user) about the new product
-        theNewProId = view.tfIdNewPro.getText().trim();
-        String textPrice = view.tfPriceNewPro.getText().trim();
-        String textStock = view.tfStockNewPro.getText().trim();
-        String description = view.taDescriptionNewPro.getText().trim();
-        String iPath = view.imageUriNewPro; //image Path from the imageChooser in View class
+        theNewProId = view.getNewIdText().trim();
+        String textPrice = view.getNewPriceText().trim();
+        String textStock = view.getNewStockText().trim();
+        String description = view.getNewDescriptionText().trim();
+        String iPath = view.getNewImageUri(); //image Path from the imageChooser in View class
 
         //validate input
         if (validateInputNewProChild(theNewProId, textPrice, textStock, description, iPath) ==false) {
@@ -228,7 +228,7 @@ public class WarehouseModel {
         } else {
             //copy the user selected image to project image folder and using productId as image name
             //and get the image extension from the source image, we write this name to database
-            String imageNameWithExtension = ImageFileManager.copyFileToDestination(view.imageUriNewPro, StorageLocation.imageFolder,theNewProId);
+            String imageNameWithExtension = ImageFileManager.copyFileToDestination(view.getNewImageUri(), StorageLocation.imageFolder,theNewProId);
             double price = Double.parseDouble(textPrice);
             int stock = Integer.parseInt(textStock);
 
@@ -263,7 +263,7 @@ public class WarehouseModel {
         }
 
         // Validate if there is unperformed stock changeBy:
-        if(!view.tfChangeByEdit.getText().trim().isEmpty()){
+        if(!view.getChangeByText().trim().isEmpty()){
             errorMessage.append("\u2022 Change stock by not applied.\n");
         }
 

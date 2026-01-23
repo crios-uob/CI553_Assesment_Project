@@ -23,7 +23,7 @@ import java.io.IOException;
  * The view switches to orderMapRoot for the next task after the order is prepared and collected by customer.
  */
 
-public class PickerView  {
+public class PickerView implements PickerDisplay {
     public PickerController pickerController;
 
     private final int WIDTH = UIStyle.pickerWinWidth;
@@ -120,7 +120,7 @@ public class PickerView  {
         }
     }
 
-    void update(String strOrderMap, String strOrderDetail) {
+    public void update(String strOrderMap, String strOrderDetail) {
         taOrderMap.setText(strOrderMap);
         taOrderDetail.setText(strOrderDetail);
         laDetailRootTitle.setText("Progressing Order Details");
