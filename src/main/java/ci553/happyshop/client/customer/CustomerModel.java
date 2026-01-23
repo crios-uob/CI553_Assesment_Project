@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -100,6 +101,8 @@ public class CustomerModel {
             if (!merged) {
                 trolley.add(addedProduct);
             }
+            // Sort Trolley By Product Id
+            Collections.sort(trolley);
             displayTaTrolley = ProductListFormatter.buildString(trolley); // Build Trolley Display Text
         }
         else{
