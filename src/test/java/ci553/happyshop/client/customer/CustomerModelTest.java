@@ -213,11 +213,68 @@ class CustomerModelTest {
         assertEquals(2, model.getTrolley().size());
     }
 
+    @Test
+    void searchFindsProductInStock() throws SQLException {
+        CustomerModel model = new CustomerModel();
+        TestCustomerView view = new TestCustomerView();
+        Product product = new Product("0001", "TV", "0001.jpg", 10.0, 5);
+
+        model.cusView = view;
+        model.databaseRW = new SearchDatabaseRW(product);
+        view.idText = "0001";
+
+        model.search();
+
+        assertTrue(view.lastSearchResult.contains("Product_Id: 0001"));
+    }
+
+    @Test
+    void searchShowsMessageWhenNotFound() throws SQLException {
+        CustomerModel model = new CustomerModel();
+        TestCustomerView view = new TestCustomerView();
+
+        model.cusView = view;
+        model.databaseRW = new SearchDatabaseRW(null);
+        view.idText = "0001";
+
+        model.search();
+
+        assertTrue(view.lastSearchResult.contains("No Product was found with ID 0001"));
+    }
+
+    @Test
+    void searchShowsMessageWhenOutOfStock() throws SQLException {
+        CustomerModel model = new CustomerModel();
+        TestCustomerView view = new TestCustomerView();
+        Product product = new Product("0001", "TV", "0001.jpg", 10.0, 0);
+
+        model.cusView = view;
+        model.databaseRW = new SearchDatabaseRW(product);
+        view.idText = "0001";
+
+        model.search();
+
+        assertTrue(view.lastSearchResult.contains("No Product was found with ID 0001"));
+    }
+
+    @Test
+    void checkOutShowsMessageWhenTrolleyEmpty() throws IOException, SQLException {
+        CustomerModel model = new CustomerModel();
+        TestCustomerView view = new TestCustomerView();
+
+        model.cusView = view;
+
+        model.checkOut();
+
+        assertEquals("Your trolley is empty", view.lastTrolley);
+    }
+
     static class TestCustomerView extends CustomerView {
         String lastSearchResult = "";
         String lastTrolley = "";
         String lastReceipt = "";
         String quantityText = "1";
+        String idText = "";
 
         @Override
         public void update(String imageName, String searchResult, String trolley, String receipt) {
@@ -229,6 +286,11 @@ class CustomerModelTest {
         @Override
         public String getQuantityText() {
             return quantityText;
+        }
+
+        @Override
+        public String getIdText() {
+            return idText;
         }
 
         @Override
@@ -274,6 +336,49 @@ class CustomerModelTest {
         @Override
         public ArrayList<Product> purchaseStocks(ArrayList<Product> proList) {
             return insufficientProducts;
+        }
+
+        @Override
+        public void updateProduct(String id, String des, double price, String imageName, int stock) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void deleteProduct(String id) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void insertNewProduct(String id, String des, double price, String image, int stock) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isProIdAvailable(String productId) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    static class SearchDatabaseRW implements DatabaseRW {
+        private final Product product;
+
+        SearchDatabaseRW(Product product) {
+            this.product = product;
+        }
+
+        @Override
+        public ArrayList<Product> searchProduct(String keyword) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Product searchByProductId(String productId) {
+            return product;
+        }
+
+        @Override
+        public ArrayList<Product> purchaseStocks(ArrayList<Product> proList) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
